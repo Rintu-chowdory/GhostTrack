@@ -17,7 +17,16 @@ from phonenumbers import carrier, geocoder, timezone
 import sys
 from sys import stderr
 
-__version__ = "2.3.0"
+__version__ = "2.4.0-preview"
+
+
+def apply_no_color():
+    """Respect the NO_COLOR env var (https://no-color.org): strip ANSI colors."""
+    import os as _os
+    if _os.environ.get("NO_COLOR"):
+        for name in list(globals()):
+            if name in ("Bl", "Re", "Gr", "Ye", "Blu", "Mage", "Cy", "Wh"):
+                globals()[name] = ''
 
 
 def handle_version_args(argv):
@@ -343,6 +352,7 @@ def main():
 
 
 if __name__ == '__main__':
+    apply_no_color()
     if handle_version_args(sys.argv[1:]):
         exit(0)
     try:

@@ -200,3 +200,21 @@ def test_version_flag():
 
 def test_no_version_flag_runs_through():
     assert ghtr.handle_version_args([]) is False
+
+
+# ---------- NO_COLOR (preview feature) ----------
+
+def test_no_color_strips_ansi_codes(monkeypatch):
+    monkeypatch.setenv("NO_COLOR", "1")
+    ghtr.apply_no_color()
+    assert ghtr.Gr == "" and ghtr.Wh == "" and ghtr.Re == ""
+    monkeypatch.delenv("NO_COLOR")
+    import importlib
+    spec2 = importlib.util.spec_from_file_location("ghtr2", os.path.join(ROOT, "GhostTR.py"))
+    m2 = importlib.util.module_from_spec(spec2)
+    with mock.patch("os.system"):
+        spec2.loader.exec_module(m2)
+    assert m2.Gr != ""  # colors restored on fresh import
+    ghtr.Gr = m2.Gr  # restore for other tests in the same session
+    ghtr.Wh = m2.Wh
+    ghtr.Re = m2.Re
