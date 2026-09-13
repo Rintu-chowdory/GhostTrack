@@ -1,5 +1,13 @@
 # GhostTrack
+
 Useful tool to track location or mobile number, so this tool can be called osint or also information gathering
+
+> **Maintained fork (v2.3)** — based on the original [HunxByts/GhostTrack](https://github.com/HunxByts/GhostTrack) (all credit to the original author).
+> Improvements in this fork: HTTPS API calls with timeouts, error handling for invalid IPs/phone numbers,
+> full-precision Google Maps links, browser User-Agent to fix false negatives in the username scanner,
+> removed dead sites (Periscope, StumbleUpon, Ello, We Heart It, duplicate Snapchat), English phone-lookup
+> locale with a configurable default region (DE), and a proper menu loop instead of recursion.
+
 
 <img src="https://github.com/HunxByts/GhostTrack/blob/main/asset/bn.png"/>
 
