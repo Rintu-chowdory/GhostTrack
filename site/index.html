@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GhostTrack — IP, Phone &amp; Username OSINT Toolkit</title>
+<meta name="description" content="GhostTrack is a fast, open-source OSINT utility to look up IP addresses, phone numbers and usernames across social media. Docker-ready, CI-tested, packaged.">
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #3fb950; --accent-dim: #238636;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6; overflow-x: hidden;
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* hero */
+  .hero { text-align: center; padding: 80px 0 60px; position: relative; }
+  .hero .ghost { font-size: 56px; line-height: 1; margin-bottom: 12px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  h1 {
+    font-size: 52px; letter-spacing: -1px; margin-bottom: 8px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  .tagline { color: var(--muted); font-size: 20px; max-width: 620px; margin: 0 auto 28px; }
+  .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+  .badges img { height: 20px; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 12px 24px; border-radius: 6px;
+    font-size: 15px; font-weight: 600; border: 1px solid var(--border);
+  }
+  .btn-primary { background: var(--accent-dim); border-color: var(--accent-dim); color: #fff; }
+  .btn-primary:hover { background: var(--accent); text-decoration: none; }
+  .btn-ghost:hover { background: var(--panel); text-decoration: none; }
+
+  /* terminal */
+  .terminal {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    max-width: 720px; margin: 48px auto 0; text-align: left; overflow: hidden;
+  }
+  .terminal .bar {
+    display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border);
+  }
+  .terminal .bar span { width: 11px; height: 11px; border-radius: 50%; background: var(--border); }
+  .terminal pre {
+    padding: 18px 22px; overflow-x: auto; color: var(--text);
+    font-size: 14px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  .terminal .c { color: var(--muted); }
+  .terminal .p { color: var(--accent); }
+
+  /* features */
+  section { padding: 64px 0; }
+  h2 { font-size: 32px; text-align: center; margin-bottom: 8px; }
+  .sub { color: var(--muted); text-align: center; margin-bottom: 40px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 24px; transition: border-color .15s;
+  }
+  .card:hover { border-color: var(--accent-dim); }
+  .card h3 { font-size: 17px; margin-bottom: 6px; }
+  .card p { color: var(--muted); font-size: 14px; }
+  .card .shot {
+    width: 100%; border-radius: 6px; margin-bottom: 16px; border: 1px solid var(--border);
+    display: block; background: #000;
+  }
+
+  /* install */
+  .code-block {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px 24px; overflow-x: auto; max-width: 720px; margin: 0 auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px;
+  }
+  .code-block .c { color: var(--muted); }
+  .code-block .p { color: var(--accent); }
+  .channels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 720px; margin: 32px auto 0; }
+  @media (max-width: 640px) { .channels { grid-template-columns: 1fr; } h1 { font-size: 38px; } }
+  .channel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .channel h3 { font-size: 15px; margin-bottom: 6px; }
+  .channel p { color: var(--muted); font-size: 13px; }
+  .pill { font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 10px; margin-left: 8px; vertical-align: middle; }
+  .pill-prod { background: rgba(63,185,80,.15); color: var(--accent); border: 1px solid var(--accent-dim); }
+  .pill-prev { background: rgba(139,148,158,.15); color: var(--muted); border: 1px solid var(--border); }
+
+  footer { border-top: 1px solid var(--border); padding: 32px 0 48px; color: var(--muted); font-size: 14px; }
+  footer .container { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<div class="hero container">
+  <div class="ghost">( o.o )</div>
+  <h1>GhostTrack</h1>
+  <p class="tagline">Fast, open-source OSINT utility to look up IP addresses, validate phone numbers and find usernames across 19+ social platforms.</p>
+  <div class="badges">
+    <a href="https://github.com/Rintu-chowdory/GhostTrack/actions/workflows/ci.yml"><img src="https://github.com/Rintu-chowdory/GhostTrack/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+    <a href="https://github.com/Rintu-chowdory/GhostTrack/releases"><img src="https://img.shields.io/github/v/release/Rintu-chowdory/GhostTrack" alt="Release"></a>
+  </div>
+  <div class="cta">
+    <a class="btn btn-primary" href="https://github.com/Rintu-chowdory/GhostTrack">View on GitHub</a>
+    <a class="btn btn-ghost" href="https://github.com/Rintu-chowdory/GhostTrack/releases">Download Release</a>
+  </div>
+
+  <div class="terminal">
+    <div class="bar"><span></span><span></span><span></span></div>
+    <pre><span class="p">$</span> docker run -it ghcr.io/rintu-chowdory/ghosttrack:latest
+<span class="c">GhostTrack v2.3.0 — select an option:</span>
+[ 1 ] IP Tracker
+[ 2 ] Show Your IP
+[ 3 ] Phone Number Tracker
+[ 4 ] Username Tracker
+[ 0 ] Exit
+<span class="p">Select Option :</span></pre>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <h2>Four trackers, one tool</h2>
+    <p class="sub">Everything runs locally — your lookups never pass through a third-party web service.</p>
+    <div class="grid">
+      <div class="card">
+        <img class="shot" src="img/ip.png" alt="IP tracker screenshot">
+        <h3>IP Tracker</h3>
+        <p>Geolocation, ISP, ASN and timezone for any IP — with a precise Google Maps link.</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="img/phone.png" alt="Phone tracker screenshot">
+        <h3>Phone Number Tracker</h3>
+        <p>Validate and dissect phone numbers: carrier, region, type and timezone. Region-aware.</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="img/User.png" alt="Username tracker screenshot">
+        <h3>Username Tracker</h3>
+        <p>Check one username across 19+ social platforms in seconds. Browser-grade requests.</p>
+      </div>
+      <div class="card">
+        <img class="shot" src="img/bn.png" alt="GhostTrack banner">
+        <h3>Show Your IP</h3>
+        <p>Instantly reveal your own public IP — handy to verify your VPN is doing its job.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>Get started in 30 seconds</h2>
+    <p class="sub">Pick whichever install path fits you.</p>
+    <div class="code-block">
+<span class="c"># Docker (no clone needed)</span>
+<span class="p">$</span> docker run -it ghcr.io/rintu-chowdory/ghosttrack:latest
+
+<span class="c"># From source</span>
+<span class="p">$</span> git clone https://github.com/Rintu-chowdory/GhostTrack.git
+<span class="p">$</span> cd GhostTrack &amp;&amp; pip3 install -r requirements.txt
+<span class="p">$</span> python3 GhostTR.py
+
+<span class="c"># From a release package</span>
+<span class="p">$</span> pip3 install ghosttrack-2.3.0-py3-none-any.whl
+    </div>
+
+    <div class="channels">
+      <div class="channel">
+        <h3>Production <span class="pill pill-prod">stable</span></h3>
+        <p>Tagged <a href="https://github.com/Rintu-chowdory/GhostTrack/releases/tag/v2.3.0">v2.3.0</a>. Docker <code>:latest</code>. Fully tested on Python 3.9–3.12.</p>
+      </div>
+      <div class="channel">
+        <h3>Preview <span class="pill pill-prev">pre-release</span></h3>
+        <p>Built from the <code>dev</code> branch. Docker <code>:preview</code>. Try new features first, expect rough edges.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <span>GhostTrack is a maintained fork — original tool by <a href="https://github.com/HunxByts/GhostTrack">HunxByts</a>. All credit to the original author.</span>
+    <span><a href="https://github.com/Rintu-chowdory/GhostTrack">GitHub</a> · <a href="https://github.com/Rintu-chowdory/GhostTrack/releases">Releases</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
