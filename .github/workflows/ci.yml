@@ -47,4 +47,4 @@ jobs:
 
       - name: Smoke test image (non-interactive menu loads and exits)
         run: |
-          docker run --rm ghosttrack:ci python3 -c "import GhostTR" 
+          docker run --rm --entrypoint python3 ghosttrack:ci -c "import GhostTR; print('smoke test OK')"
