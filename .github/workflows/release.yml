@@ -1,0 +1,57 @@
+name: Release
+
+# Publishing pipeline: stable tags (v2.3.0) publish to the PRODUCTION channel
+# (GitHub Release + ghcr.io image tagged :latest), pre-release tags
+# (v2.4.0-preview) publish to the PREVIEW channel (:preview image + pre-release).
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Determine release channel
+        id: chan
+        run: |
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            echo "channel=preview"   >> "$GITHUB_OUTPUT"
+            echo "prerelease=true"   >> "$GITHUB_OUTPUT"
+          else
+            echo "channel=latest"    >> "$GITHUB_OUTPUT"
+            echo "prerelease=false"  >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Python package (sdist + wheel)
+        run: |
+          pip install build
+          python -m build
+
+      - name: Build and push Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          IMAGE="ghcr.io/${GITHUB_ACTOR,,}/ghosttrack"
+          VERSION="${GITHUB_REF_NAME#v}"
+          CHANNEL="${{ steps.chan.outputs.channel }}"
+          docker build -t "$IMAGE:$VERSION" -t "$IMAGE:$CHANNEL" .
+          echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker push --all-tags "$IMAGE"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          prerelease: ${{ steps.chan.outputs.prerelease == 'true' }}
+          generate_release_notes: true

@@ -14,7 +14,18 @@ import time
 import os
 import phonenumbers
 from phonenumbers import carrier, geocoder, timezone
+import sys
 from sys import stderr
+
+__version__ = "2.3.0"
+
+
+def handle_version_args(argv):
+    """Print version and exit if -V/--version was passed. Returns True if handled."""
+    if '-V' in argv or '--version' in argv:
+        print(f"GhostTrack v{__version__}")
+        return True
+    return False
 
 Bl = '\033[30m'  # VARIABLE BUAT WARNA CUYY
 Re = '\033[1;31m'
@@ -332,6 +343,8 @@ def main():
 
 
 if __name__ == '__main__':
+    if handle_version_args(sys.argv[1:]):
+        exit(0)
     try:
         main()
     except KeyboardInterrupt:

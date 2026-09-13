@@ -187,3 +187,16 @@ def test_is_in_options():
     assert ghtr.is_in_options(0) is True
     assert ghtr.is_in_options(4) is True
     assert ghtr.is_in_options(99) is False
+
+
+# ---------- version ----------
+
+def test_version_flag():
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        assert ghtr.handle_version_args(['--version']) is True
+    assert f"v{ghtr.__version__}" in out.getvalue()
+
+
+def test_no_version_flag_runs_through():
+    assert ghtr.handle_version_args([]) is False
